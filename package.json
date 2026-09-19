@@ -1,0 +1,14 @@
+{
+  "name": "product-price-tracker",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "dev:frontend": "npm --prefix frontend run dev",
+    "dev:backend": "npm --prefix backend run dev",
+    "install:all": "npm install --prefix frontend && npm install --prefix backend"
+  }
+}
