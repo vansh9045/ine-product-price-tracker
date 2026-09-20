@@ -10,7 +10,7 @@ import {
     updateBatchProgress,
 } from './scrapeQueueService.js';
 
-const WORKER_BATCH_SIZE = 2;
+const WORKER_BATCH_SIZE = 1;
 const MAX_JOB_ATTEMPTS = 3;
 
 export async function processScrapeQueue() {
