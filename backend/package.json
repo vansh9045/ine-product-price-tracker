@@ -15,5 +15,10 @@
     "express": "^5.1.0",
     "node-fetch": "^3.3.2",
     "playwright": "^1.55.0"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.6.1",
+    "postcss": "^8.5.28",
+    "tailwindcss": "^4.3.3"
   }
 }

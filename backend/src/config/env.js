@@ -28,4 +28,5 @@ export const env = {
   scraperMaxRetries: getPositiveInteger('SCRAPER_MAX_RETRIES', 3),
   scraperRetryDelayMs: getPositiveInteger('SCRAPER_RETRY_DELAY_MS', 1000),
   scraperTimeoutMs: getPositiveInteger('SCRAPER_TIMEOUT_MS', 15000),
+  scraperHeaded: process.env.SCRAPER_HEADED === 'true' || process.env.SCRAPER_HEADED === '1',
 };

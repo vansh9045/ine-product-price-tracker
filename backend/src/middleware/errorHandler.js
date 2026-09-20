@@ -11,8 +11,12 @@ export function errorHandler(error, _request, response, _next) {
     console.error('[API_ERROR]', error);
   }
 
+  const message = (statusCode === 502 || statusCode < 500)
+    ? error.message
+    : 'An unexpected server error occurred.';
+
   response.status(statusCode).json({
     success: false,
-    message: statusCode >= 500 ? 'An unexpected server error occurred.' : error.message,
+    message,
   });
 }

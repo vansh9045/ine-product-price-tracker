@@ -32,7 +32,7 @@ function parseStock(priceBlockText) {
     return 'out_of_stock';
   }
 
-  if (/(?:in\s+stock|only\s+\d+\s+left|\d+\s+in\s+stock|selling\s+fast|hurry\s+just\s+\d+\s+left)/.test(normalizedText)) {
+  if (/(?:in\s+stock|only\s+\d+\s+left|\d+\s+in\s+stock|selling\s+fast|hurry,?\s+just\s+\d+\s+left)/.test(normalizedText)) {
     return 'in_stock';
   }
 
@@ -245,7 +245,7 @@ async function scrapeOnce(productUrl, { headed }) {
   }
 }
 
-export async function scrapeProduct(product, { headed = false, onAttempt } = {}) {
+export async function scrapeProduct(product, { headed = env.scraperHeaded, onAttempt } = {}) {
   if (!product?.product_url) {
     throw new ScrapeError('PRODUCT_URL_MISSING', 'Tracked product has no product URL.', { retryable: false });
   }

@@ -22,6 +22,14 @@ function createHttpError(message, statusCode) {
   return error;
 }
 
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+function assertValidUuid(id) {
+  if (typeof id !== 'string' || !UUID_REGEX.test(id.trim())) {
+    throw createHttpError('Tracked product ID must be a valid UUID.', 400);
+  }
+}
+
 function throwDatabaseError(error) {
   if (error.code === '23505') {
     throw createHttpError('This product is already being tracked.', 409);
@@ -64,6 +72,8 @@ export async function listTrackedProducts() {
 }
 
 export async function getTrackedProductById(id) {
+  assertValidUuid(id);
+
   const { data, error } = await getSupabaseClient()
     .from('tracked_products')
     .select(trackedProductFields)
@@ -82,6 +92,8 @@ export async function getTrackedProductById(id) {
 }
 
 export async function deleteTrackedProduct(id) {
+  assertValidUuid(id);
+
   const { data, error } = await getSupabaseClient()
     .from('tracked_products')
     .delete()
