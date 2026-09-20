@@ -8,6 +8,17 @@ const PRICE_BLOCK_SELECTOR = '.price-block';
 const REQUIRED_MOUSE_MOVES = 45;
 const MOUSE_MOVE_DELAY_MS = 50;
 
+function throwPageStructureChanged(message, cause) {
+  throw new ScrapeError(
+    'PAGE_STRUCTURE_CHANGED',
+    message,
+    {
+      retryable: false,
+      cause,
+    },
+  );
+}
+
 function parsePrice(priceText) {
   const normalizedText = priceText
     .replace(/[\u200B\u00A0]/g, '')
@@ -161,25 +172,17 @@ async function performRevealInteraction(page) {
       timeout: env.scraperTimeoutMs,
     });
   } catch (error) {
-    throw new ScrapeError(
-      'REVEAL_BUTTON_NOT_FOUND',
-      'The store reveal-price control was not found.',
-      {
-        retryable: false,
-        cause: error,
-      },
+    throwPageStructureChanged(
+      'The store page structure changed: the Reveal price control was not found.',
+      error,
     );
   }
 
   const box = await priceBlock.boundingBox();
 
   if (!box) {
-    throw new ScrapeError(
-      'PRICE_BLOCK_NOT_INTERACTABLE',
-      'The store price panel is not interactable.',
-      {
-        retryable: true,
-      },
+    throwPageStructureChanged(
+      'The store page structure changed: the price block is missing or not interactable.',
     );
   }
 
@@ -454,12 +457,8 @@ async function waitForPriceResult(page) {
   );
 
   if (!priceText) {
-    throw new ScrapeError(
-      'PRICE_SELECTOR_EMPTY',
-      'The visible store price element is empty.',
-      {
-        retryable: false,
-      },
+    throwPageStructureChanged(
+      'The store page structure changed: the visible price element could not be found.',
     );
   }
 
@@ -582,8 +581,7 @@ export async function scrapeProduct(
 
   console.info(
     `[SCRAPER] Starting ${product.product_name ??
-    product.product_url
-    }`,
+    product.product_url}`,
   );
 
   const result =
@@ -610,8 +608,7 @@ export async function scrapeProduct(
   if (result.success) {
     console.info(
       `[SCRAPER] Success for ${product.product_name ??
-      product.product_url
-      }`,
+      product.product_url}`,
     );
 
     return {
@@ -624,8 +621,7 @@ export async function scrapeProduct(
 
   console.error(
     `[SCRAPER] Failed for ${product.product_name ??
-    product.product_url
-    }: ${result.error.code}`,
+    product.product_url}: ${result.error.code}`,
   );
 
   return {
@@ -695,8 +691,7 @@ export async function scrapeProductsInBulk(
       async (attemptNumber) => {
         console.info(
           `[SCRAPER] Attempt ${attemptNumber} for ${product.product_name ??
-          product.product_url
-          }`,
+          product.product_url}`,
         );
 
         const page =
@@ -767,8 +762,7 @@ export async function scrapeProductsInBulk(
       try {
         console.info(
           `[SCRAPER] Bulk starting ${product.product_name ??
-          product.product_url
-          }`,
+          product.product_url}`,
         );
 
         const result =
@@ -789,8 +783,7 @@ export async function scrapeProductsInBulk(
 
           console.info(
             `[SCRAPER] Bulk success for ${product.product_name ??
-            product.product_url
-            }`,
+            product.product_url}`,
           );
         } else {
           results[index] = {
@@ -808,9 +801,7 @@ export async function scrapeProductsInBulk(
 
           console.error(
             `[SCRAPER] Bulk failed for ${product.product_name ??
-            product.product_url
-            }: ${result.error.code
-            }`,
+            product.product_url}: ${result.error.code}`,
           );
         }
       } catch (error) {
@@ -830,8 +821,7 @@ export async function scrapeProductsInBulk(
 
         console.error(
           `[SCRAPER] Unexpected bulk error for ${product.product_name ??
-          product.product_url
-          }:`,
+          product.product_url}:`,
           error,
         );
       }
