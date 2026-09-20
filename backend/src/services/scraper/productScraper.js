@@ -529,10 +529,32 @@ async function scrapeOnce(
         },
       });
 
-    return await scrapePage(
+    const result = await scrapePage(
       page,
       productUrl,
     );
+
+    /*
+     * DEMO MODE:
+     *
+     * Keep the headed browser open for
+     * a few seconds so the browser window
+     * can be clearly seen during the demo.
+     *
+     * This does not affect production/headless
+     * scraping.
+     */
+    if (headed) {
+      console.log(
+        '[SCRAPER] Headed demo pause: 5 seconds before closing browser.',
+      );
+
+      await new Promise((resolve) =>
+        setTimeout(resolve, 5000),
+      );
+    }
+
+    return result;
   } finally {
     await browser.close();
   }
@@ -577,8 +599,10 @@ export async function scrapeProduct(
       {
         maxRetries:
           env.scraperMaxRetries,
+
         retryDelayMs:
           env.scraperRetryDelayMs,
+
         onAttempt,
       },
     );
@@ -593,7 +617,8 @@ export async function scrapeProduct(
     return {
       success: true,
       ...result.value,
-      attempts: result.attempts,
+      attempts:
+        result.attempts,
     };
   }
 
@@ -608,7 +633,8 @@ export async function scrapeProduct(
     errorCode:
       result.error.code,
     error: result.error.message,
-    attempts: result.attempts,
+    attempts:
+      result.attempts,
   };
 }
 
