@@ -2,9 +2,13 @@ node_modules/
 .env
 .env.*
 !.env.example
-.DS_Store
+
+.postman/
+
 dist/
 build/
-coverage/
-.npm/
-.vite/
+
+.DS_Store
+*.log
+
+postman/
