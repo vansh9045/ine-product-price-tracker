@@ -39,11 +39,14 @@ export default function TrackedProductCard({
 }) {
   const stock = stockStatus(product.current_stock);
 
-  const formattedPrice = new Intl.NumberFormat('en-IN', {
-    style: 'currency',
-    currency: 'INR',
-    maximumFractionDigits: 0,
-  }).format(product.current_price ?? 0);
+  const formattedPrice =
+    product.current_price != null
+      ? new Intl.NumberFormat('en-IN', {
+        style: 'currency',
+        currency: 'INR',
+        maximumFractionDigits: 0,
+      }).format(product.current_price)
+      : '—';
 
   function handleOpen() {
     if (!onOpen) return;
